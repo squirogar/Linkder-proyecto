@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/colorBackground"
+    android:gravity="center"
+    tools:context=".LoginActivity">
+
+
+<LinearLayout
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:layout_gravity="center"
+    android:gravity="center"
+    >
+    <TextView
+        android:textColor="@color/colorLetras"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textStyle="bold"
+        android:text="USUARIO"
+        android:textSize="12dp"
+        />
+
+    <EditText
+        android:id="@+id/editUsuario"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="text"
+        android:hint="user@gmail.com"
+        android:textColorHint="@color/colorCancelar"
+        android:textColor="@color/colorLetras"
+        />
+
+    <TextView
+        android:textColor="@color/colorLetras"
+        android:layout_marginTop="20dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="CONTRASEÑA"
+        android:textSize="12dp"
+        android:textStyle="bold"
+        />
+
+    <EditText
+        android:id="@+id/editPass"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@color/colorLetras"
+        android:inputType="textPassword"/>
+
+
+    <Button
+        android:id="@+id/btnIngresar"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:text="Ingresar!"
+        android:fontFamily="@font/joystix_monospace"
+        android:textColor="@color/colorLetras"
+        android:background="@drawable/button_round"
+        android:layout_marginTop="50dp"
+        android:textSize="15dp"
+        />
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:orientation="horizontal"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:layout_marginTop="30dp"
+        >
+        <TextView
+            android:textColor="@color/colorLetras"
+            android:textSize="11dp"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="No tienes cuenta?   "
+            />
+        <TextView
+            android:textColor="@color/colorLinks"
+            android:id="@+id/txtRegistrate"
+            android:textSize="11dp"
+            android:fontFamily="@font/joystix_monospace"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="Regístrate"
+            />
+
+    </LinearLayout>
+</LinearLayout>
+
+</LinearLayout>
