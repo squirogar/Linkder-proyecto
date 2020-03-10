@@ -22,12 +22,12 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textStyle="bold"
-        android:text="USUARIO"
+        android:text="E-MAIL"
         android:textSize="12dp"
         />
 
     <EditText
-        android:id="@+id/editUsuario"
+        android:id="@+id/editMail"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:inputType="text"
