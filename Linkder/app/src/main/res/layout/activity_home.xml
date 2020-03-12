@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".HomeActivity">
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:minHeight="?attr/actionBarSize"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:titleTextColor="@android:color/white"
+        android:background="@color/colorBackground">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:layout_gravity="center_vertical"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="10pt"
+                android:text="Linkder"
+                android:fontFamily="@font/joystix_monospace"
+                android:textColor="@color/colorLinks"
+                />
+        </LinearLayout>
+    </androidx.appcompat.widget.Toolbar>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:layout_gravity="center"
+        android:gravity="center"
+        >
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+
+            <Button
+                android:id="@+id/btnPerfil"
+                android:layout_width="300dp"
+                android:layout_height="wrap_content"
+                android:text="Mi perfil"
+                android:fontFamily="@font/joystix_monospace"
+                android:background="@color/colorMiPerfil"
+                android:textColor="@color/colorLetras"
+                android:paddingLeft="5dp"
+                android:drawableLeft="@drawable/ic_games3"
+                android:textSize="15dp"
+                />
+
+            <Button
+                android:id="@+id/btnMisJuegos"
+                android:layout_width="300dp"
+                android:layout_height="wrap_content"
+                android:text="Mis juegos"
+                android:fontFamily="@font/joystix_monospace"
+                android:background="@color/colorMisJuegos"
+                android:textColor="@color/colorLetras"
+                android:layout_marginTop="50dp"
+                android:textSize="15dp"
+                android:paddingLeft="5dp"
+                android:drawableLeft="@drawable/ic_games2"
+                />
+
+            <Button
+                android:id="@+id/btnListaJuegos"
+                android:layout_width="300dp"
+                android:layout_height="wrap_content"
+                android:text="Lista de juegos"
+                android:fontFamily="@font/joystix_monospace"
+                android:background="@color/colorListaJuegos"
+                android:textColor="@color/colorLetras"
+                android:layout_marginTop="50dp"
+                android:textSize="15dp"
+                android:paddingLeft="5dp"
+                android:drawableLeft="@drawable/ic_games1"
+
+                />
+
+
+        </LinearLayout>
+    </LinearLayout>
+</LinearLayout>

@@ -59,10 +59,11 @@
         android:layout_width="200dp"
         android:layout_height="wrap_content"
         android:text="Ingresar!"
+        android:textAlignment="center"
         android:fontFamily="@font/joystix_monospace"
         android:textColor="@color/colorLetras"
         android:background="@drawable/button_round"
-        android:layout_marginTop="50dp"
+        android:layout_marginTop="30dp"
         android:textSize="15dp"
         />
 
