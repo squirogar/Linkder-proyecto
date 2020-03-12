@@ -41,4 +41,13 @@
         android:layout_marginTop="10dp"
         />
 
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Acá se mostrará una lista de todos los juegos de la bd"
+        android:textAlignment="center"
+        android:textSize="25dp"
+        android:layout_marginTop="10dp"
+        />
+
 </LinearLayout>
