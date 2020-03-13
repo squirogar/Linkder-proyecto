@@ -26,7 +26,7 @@ public class HomeActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
-/*
+
         //toolbar
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
             toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -34,9 +34,9 @@ public class HomeActivity extends AppCompatActivity {
         // Sets the Toolbar to act as the ActionBar for this Activity window.
         // Make sure the toolbar exists in the activity and is not null
         //toolbar.setLogo(R.drawable.ic_home_white_24dp);
-        toolbar.setTitle("Ejemplo TOOLBAR");
+        //toolbar.setTitle("Ejemplo TOOLBAR");
         setSupportActionBar(toolbar);
-*/
+
         prefs =  getSharedPreferences("Preference", Context.MODE_PRIVATE);
 
 
