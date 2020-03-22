@@ -15,6 +15,20 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.HashMap;
+import java.util.Map;
+
 
 public class HomeActivity extends AppCompatActivity {
     private Toolbar toolbar;
@@ -48,8 +62,10 @@ public class HomeActivity extends AppCompatActivity {
         btnPerfil.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                intent = new Intent(HomeActivity.this, PerfilActivity.class);
-                startActivity(intent);
+                String mailUsuarioLogueado = prefs.getString("mail", null);
+                if(mailUsuarioLogueado != null)
+                    getDatosUsuario(mailUsuarioLogueado);
+
             }
         });
 
@@ -105,5 +121,59 @@ public class HomeActivity extends AppCompatActivity {
         SharedPreferences.Editor editor = prefs.edit();
         editor.clear();
         editor.apply();
+    }
+
+    //se recuperan los datos de usuario logueado en la aplicación, se ponen en un bundle y se envía a una mueva actividad
+    void getDatosUsuario(String mail) {
+        Map<String, String> params = new HashMap<String, String>();
+        params.put("mail", String.valueOf(mail)); //esta bien como mail? o email???
+
+        String URL = "http://abascur.cl/android/android_1/ObtenerUsuarioMail"; //cambiar!
+        RequestQueue queue = Volley.newRequestQueue(getApplicationContext());
+
+        JsonObjectRequest jsonReque = new JsonObjectRequest(Request.Method.POST, URL, new JSONObject(params),
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+
+                        try {
+                            String status = response.getString("status");
+                            if (status.equals("success"))
+                            {
+                                //peticion exitosa pero puede haber o no dato
+                                Object mensaje = response.get("mensaje");
+                                if (mensaje instanceof JSONArray)
+                                {
+                                    Bundle b = new Bundle();
+                                    b.putString("nick", response.getJSONObject("mensaje").getString("nick"));
+                                    b.putString("email",response.getJSONObject("mensaje").getString("email"));
+                                    b.putString("descripcion", response.getJSONObject("mensaje").getString("descripcion"));
+                                    b.putString("contactos", response.getJSONObject("mensaje").getString("contactos"));
+                                    intent = new Intent(HomeActivity.this, PerfilActivity.class);
+                                    intent.putExtras(b);
+                                    startActivity(intent);
+                                }
+                                else
+                                {
+                                    //retorno String "no data"
+                                    Toast.makeText(getApplicationContext(), "sin Datos", Toast.LENGTH_LONG).show();
+                                }
+                            } else {
+                                //cuando status no es "success"
+                                Toast.makeText(getApplicationContext(), "Ha ocurrido un error en la petición", Toast.LENGTH_LONG).show();
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }, new Response.ErrorListener() {
+
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Toast.makeText(getApplicationContext(), error.getMessage(), Toast.LENGTH_SHORT).show();
+
+            }
+        });
+        queue.add(jsonReque);
     }
 }

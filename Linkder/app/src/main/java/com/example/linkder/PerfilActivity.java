@@ -11,10 +11,11 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 public class PerfilActivity extends AppCompatActivity {
-
+    private TextView textNick, textMail, textDescripcion, textContacto;
     private Toolbar toolbar;
     private SharedPreferences prefs;
 
@@ -42,6 +43,19 @@ public class PerfilActivity extends AppCompatActivity {
 
         prefs = getSharedPreferences("Preference", Context.MODE_PRIVATE);
 
+        textNick = findViewById(R.id.textNick);
+        textMail = findViewById(R.id.textMail);
+        textDescripcion = findViewById(R.id.editDescripcion);
+        textContacto = findViewById(R.id.textContacto);
+
+        //Obtenemos el bundle enviado desde la actividad
+        Bundle b = getIntent().getExtras();
+
+        //ponemos la informacion en los textwievs correpondientes
+        textNick.setText(b.getString("nick"));
+        textMail.setText(b.getString("email"));
+        textDescripcion.setText(b.getString("descripcion"));
+        textContacto.setText(b.getString("contactos"));
     }
 
 
