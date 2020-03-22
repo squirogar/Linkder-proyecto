@@ -12,11 +12,22 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
 import com.example.linkder.models.Usuario;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
@@ -25,15 +36,11 @@ public class RegistroActivity extends AppCompatActivity {
     private ImageView imgBack;
     private EditText editNombre, editMail, editPass, editDescripcion, editContacto;
     private Button btnReg;
-    private Realm mRealm;
+
     private SharedPreferences prefs;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        //Realm
-        setUpRealmConfig();
-        mRealm = Realm.getDefaultInstance();
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_registro);
 
@@ -64,19 +71,10 @@ public class RegistroActivity extends AppCompatActivity {
             public void onClick(View v) {
                 if(validaEntradaNula()) {
                     if(Utilidades.isMailValid(editMail.getText().toString())) {
-                        if(yaEstaRegistrado()) {
-                            Toast.makeText(getApplicationContext(),"Ya hay alguien registrado con ese e-mail y/o nickname",
-                                    Toast.LENGTH_SHORT).show();
+                        if(Utilidades.verificaConexion(getApplication())) {
+                            validaUsuarioNuevo();
                         } else {
-                            Toast.makeText(getApplicationContext(),"Éxito al registrar", Toast.LENGTH_SHORT).show();
-                            guardaInfoReg();
-                            registraNuevoUsuario();
-
-                            //Una vez listo el registro se deriva al splash
-                            Intent intent = new Intent(RegistroActivity.this, MainActivity.class);
-                            startActivity(intent);
-                            //Se mata esta actividad
-                            finish();
+                            Toast.makeText(getApplicationContext(), "No hay conexión de internet, no se puede registrar", Toast.LENGTH_LONG).show();
                         }
                     } else {
                         Toast.makeText(getApplicationContext(),"e-mail ingresado no valido",
@@ -109,30 +107,96 @@ public class RegistroActivity extends AppCompatActivity {
         return flag;
     }
 
-    //valida si ya existe un usuario registrado
-    private boolean yaEstaRegistrado() {
-        Usuario u = mRealm.where(Usuario.class).equalTo("mail", editMail.getText().toString())
-                .or().equalTo("nick", editNombre.getText().toString())
-                .findFirst();
-        if(u != null) {
-            return true;
-        }
-        return false;
+    //Valida si ya hay alguien registrado con ese rut, sino procede a registrar
+    private void validaUsuarioNuevo() {
+        Map<String, String> params = new HashMap<String, String>();
+        params.put("email", editMail.getText().toString());
+
+        RequestQueue queue = Volley.newRequestQueue(getApplicationContext());
+        String URL = "http://abascur.cl/android/misnotasapp/GetUsuario"; //cambiar!
+
+        JsonObjectRequest jsonReque = new JsonObjectRequest(Request.Method.POST, URL, new JSONObject(params),
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+                            String status = response.getString("status");
+                            if (status.equals("success")) {
+                                //peticion exitosa pero puede haber o no dato
+                                Object mensaje = response.get("mensaje");
+                                if(mensaje instanceof JSONObject){
+                                    Toast.makeText(getApplicationContext(),"Ya existe alguien registrado con ese rut", Toast.LENGTH_LONG).show();
+                                } else {
+                                    registraNuevoUsuario();
+                                }
+
+                            } else {
+                                //Error 003 - rut invalido
+                                Toast.makeText(getApplicationContext(),"Hubo un error en la petición", Toast.LENGTH_LONG).show();
+                            }
+
+                        } catch (JSONException e) {
+                            Toast.makeText(getApplicationContext(),e.getMessage(), Toast.LENGTH_LONG).show();
+
+                        }
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Toast.makeText(getApplicationContext(), error.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+        queue.add(jsonReque);
     }
 
-    //Establece la configuracion de Realm
-    private void setUpRealmConfig() {
-        // Se inicializa realm
-        Realm.init(this.getApplicationContext());
 
-        // Configuración por defecto en realm
-        RealmConfiguration config = new RealmConfiguration.
-                Builder().
-                deleteRealmIfMigrationNeeded().
-                build();
-        Realm.setDefaultConfiguration(config);
+    //Registra un nuevo usuario en la api y manda al usuario a la main
+    private void registraNuevoUsuario() {
+        Map<String, String> params = new HashMap<String, String>();
+        params.put("nick", editNombre.getText().toString());
+        params.put("email", editMail.getText().toString());
+        params.put("clave", editPass.getText().toString());
+        params.put("descripcion", editDescripcion.getText().toString());
+        params.put("contactos", editContacto.getText().toString());
 
+
+        RequestQueue queue = Volley.newRequestQueue(getApplicationContext());
+        String URL = "http://abascur.cl/android/misnotasapp/InsertOrUpdateUsuario"; //cambiar!
+
+        JsonObjectRequest jsonReque = new JsonObjectRequest(Request.Method.POST, URL, new JSONObject(params),
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+                            String status = response.getString("status");
+                            Toast.makeText(getApplicationContext(), status, Toast.LENGTH_SHORT).show();
+                            if (status.equals("success")) {
+                                Toast.makeText(getApplicationContext(),"Exito al registrar",
+                                        Toast.LENGTH_SHORT).show();
+                                guardaInfoReg();
+                                //Una vez listo el registro se deriva al splash
+                                Intent intent = new Intent(RegistroActivity.this, MainActivity.class);
+                                startActivity(intent);
+                                //Se mata esta actividad
+                                finish();
+                            } else {
+                                //error 000 - no se agrego json
+                                Toast.makeText(getApplicationContext(),"Hubo un error en la petición", Toast.LENGTH_SHORT).show();
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Toast.makeText(getApplicationContext(), error.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+        queue.add(jsonReque);
     }
+
+
 
     //Guarda en las sharedPreference que el usuario se registro
     private void guardaInfoReg() {
@@ -143,20 +207,6 @@ public class RegistroActivity extends AppCompatActivity {
         editor.apply();
     }
 
-    //Guarda en Realm el registro de usuario
-    private void registraNuevoUsuario() {
-        Date cal = Calendar.getInstance().getTime();
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        String fechaRegistro = sdf.format(cal.getTime());
 
-        Usuario nuevo_usuario = new Usuario(editMail.getText().toString()
-                , editNombre.getText().toString()
-                , editPass.getText().toString()
-                , editDescripcion.getText().toString()
-                , editContacto.getText().toString()
-                , fechaRegistro);
-        mRealm.beginTransaction();
-        mRealm.insertOrUpdate(nuevo_usuario);
-        mRealm.commitTransaction();
-    }
+
 }

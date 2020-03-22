@@ -5,6 +5,12 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
 import com.example.linkder.models.Usuario;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
@@ -18,6 +24,13 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.HashMap;
+import java.util.Map;
+
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
 
@@ -25,15 +38,11 @@ public class LoginActivity extends AppCompatActivity {
 
     private TextView txtRegistrate;
     private SharedPreferences prefs;
-    private Realm mRealm;
     private EditText editMail, editPass;
     private Button btnIngresar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        //realm
-        setUpRealmConfig();
-        mRealm = Realm.getDefaultInstance();
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
@@ -50,14 +59,11 @@ public class LoginActivity extends AppCompatActivity {
             public void onClick(View v) {
                 if(validaEntradaNula()) {
                     if(Utilidades.isMailValid(editMail.getText().toString())) {
-                        if(validaUsuario()) {
-                            Toast.makeText(getApplicationContext(),"Usuario validado", Toast.LENGTH_SHORT).show();
-                            guardaInfoLogin();
-                            Intent intent = new Intent(LoginActivity.this,MainActivity.class);
-                            startActivity(intent);
-                            finish();
+                        if(Utilidades.verificaConexion(getApplication())) {
+                            //si hay conexion a internet
+                            validaUsuario();
                         } else {
-                            Toast.makeText(getApplicationContext(),"e-mail y/o contraseña incorrectos", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getApplicationContext(),"Esta acción requiere conexión a internet", Toast.LENGTH_SHORT).show();
                         }
                     } else {
                         Toast.makeText(getApplicationContext(),"e-mail ingresado no valido", Toast.LENGTH_SHORT).show();
@@ -94,30 +100,57 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     //Comprueba si el usuario existe
-    private boolean validaUsuario() {
-        Usuario u = mRealm.where(Usuario.class).equalTo("mail", editMail.getText().toString())
-                .equalTo("password", editPass.getText().toString())
-                .findFirst();
+    private void validaUsuario() {
+        Map<String, String> params = new HashMap<String, String>();
+        params.put("email", editMail.getText().toString());
 
-        if(u != null) {
-            return true;
-        }
-        return false;
+        RequestQueue queue = Volley.newRequestQueue(getApplicationContext());
+        String URL = "http://abascur.cl/android/misnotasapp/GetUsuario"; //cambiar!
+
+        JsonObjectRequest jsonReque = new JsonObjectRequest(Request.Method.POST, URL, new JSONObject(params),
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+                            String status = response.getString("status");
+                            if (status.equals("success")) {
+                                //peticion exitosa pero puede haber o no dato
+                                Object mensaje = response.get("mensaje");
+                                if(mensaje instanceof JSONObject){
+                                    if(((JSONObject) mensaje).get("clave").equals(editPass.getText().toString())) {
+                                        //si las password es la correcta
+                                        guardaInfoLogin();
+                                        Intent intent = new Intent(LoginActivity.this,MainActivity.class);
+                                        startActivity(intent);
+                                        finish();
+                                    } else {
+                                        Toast.makeText(getApplicationContext(), "Contraseña equivocada. Intente nuevamente", Toast.LENGTH_LONG).show();
+                                    }
+                                } else {
+                                    //Retorna noData
+                                    Toast.makeText(getApplicationContext(),"No hay nadie registrado con ese correo", Toast.LENGTH_LONG).show();
+                                }
+
+                            } else {
+                                //Error 003 - rut invalido
+                                Toast.makeText(getApplicationContext(), "Hubo un error en la petición", Toast.LENGTH_LONG).show();
+                            }
+
+                        } catch (JSONException e) {
+                            Toast.makeText(getApplicationContext(),e.getMessage(), Toast.LENGTH_LONG).show();
+
+                        }
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Toast.makeText(getApplicationContext(), error.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+        queue.add(jsonReque);
     }
 
-    //Establece la configuracion de Realm
-    private void setUpRealmConfig() {
-        // Se inicializa realm
-        Realm.init(this.getApplicationContext());
 
-        // Configuración por defecto en realm
-        RealmConfiguration config = new RealmConfiguration.
-                Builder().
-                deleteRealmIfMigrationNeeded().
-                build();
-        Realm.setDefaultConfiguration(config);
-
-    }
 
     //Guarda en las SharedPreferences que el usuario se logueo
     private void guardaInfoLogin() {

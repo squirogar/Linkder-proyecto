@@ -142,7 +142,7 @@ public class HomeActivity extends AppCompatActivity {
                             {
                                 //peticion exitosa pero puede haber o no dato
                                 Object mensaje = response.get("mensaje");
-                                if (mensaje instanceof JSONArray)
+                                if(mensaje instanceof JSONObject)
                                 {
                                     Bundle b = new Bundle();
                                     b.putString("nick", response.getJSONObject("mensaje").getString("nick"));
