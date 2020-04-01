@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+xmlns:app="http://schemas.android.com/apk/res-auto"
+xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/colorBackground"
+    tools:context=".RegistroActivity">
+
+    <ImageView
+        android:id="@+id/imgBack"
+        android:layout_width="wrap_content"
+        android:layout_height="30dp"
+        android:layout_margin="10dp"
+        android:src="@drawable/back"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:layout_gravity="center">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            >
+            <TextView
+                android:textColor="@color/colorLetras"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textStyle="bold"
+                android:text="NICK"
+                android:textSize="12dp"
+                />
+
+
+            <EditText
+                android:id="@+id/editNombre"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="text"
+                android:hint="user123"
+                android:textColorHint="@color/colorCancelar"
+                android:textColor="@color/colorLetras"
+                />
+
+            <TextView
+                android:textColor="@color/colorLetras"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textStyle="bold"
+                android:text="E-MAIL"
+                android:textSize="12dp"
+                />
+
+
+            <EditText
+                android:id="@+id/editMail"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="text"
+                android:hint="user@gmail.com"
+                android:textColorHint="@color/colorCancelar"
+                android:textColor="@color/colorLetras"
+                />
+
+            <TextView
+                android:textColor="@color/colorLetras"
+                android:layout_marginTop="20dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="CONTRASEÑA"
+                android:textSize="12dp"
+                android:textStyle="bold"
+                />
+
+            <EditText
+                android:id="@+id/editPass"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/colorLetras"
+                android:inputType="textPassword"/>
+
+            <TextView
+                android:textColor="@color/colorLetras"
+                android:layout_marginTop="20dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="AGREGA UNA DESCRIPCIÓN DE TI"
+                android:textSize="12dp"
+                android:textStyle="bold"
+                />
+
+            <EditText
+                android:id="@+id/editDescripcion"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/colorLetras"
+                android:hint="Me gusta jugar ..."
+                android:textColorHint="@color/colorCancelar"
+                android:inputType="text"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:text="CÓMO TE PUEDEN CONTACTAR LOS DEMÁS"
+                android:textColor="@color/colorLetras"
+                android:textSize="12dp"
+                android:textStyle="bold" />
+
+            <EditText
+                android:id="@+id/editContacto"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:hint="Facebook, Twitter, Instagram, etc"
+                android:inputType="text"
+                android:textColor="@color/colorLetras"
+                android:textColorHint="@color/colorCancelar" />
+
+            <Button
+                android:id="@+id/btnReg"
+                android:layout_width="200dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:background="@drawable/button_round"
+                android:fontFamily="@font/joystix_monospace"
+                android:text="Crear cuenta"
+                android:textColor="@color/colorLetras"
+                android:textSize="15dp"
+
+                />
+
+
+        </LinearLayout>
+    </LinearLayout>
+
+
+</LinearLayout>
